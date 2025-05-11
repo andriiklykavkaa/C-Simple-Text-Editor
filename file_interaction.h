@@ -5,7 +5,7 @@
 #ifndef FILE_INTERACTION_H
 #define FILE_INTERACTION_H
 
-void readFile(char path[]);
+void readFile(char path[], char buffer[255][255]);
 void writeFile(char path[], char text[]);
 
 #endif //FILE_INTERACTION_H

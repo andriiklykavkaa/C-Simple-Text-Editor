@@ -59,7 +59,7 @@ void addNewLine() {
 
 void saveFile() {
 
-    char textToSave[255*255];
+    char textToSave[255*255+255];
 
     char path[20];
     printf("Enter file path for saving: ");
@@ -80,7 +80,10 @@ void saveFile() {
 }
 
 void loadFile() {
-
+    char path[20];
+    printf("Enter file path for loading: ");
+    scanf("%s", &path);
+    readFile(path, buffer);
 }
 
 void printText() {
@@ -92,6 +95,7 @@ void printText() {
         }
         printf("%s\n", buffer[i]);
     }
+    printf("\n");
 }
 
 void insertByLineAndIndex() {

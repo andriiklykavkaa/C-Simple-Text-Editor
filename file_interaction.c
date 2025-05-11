@@ -3,39 +3,54 @@
 //
 
 #include <stdio.h>
+#include <string.h>
 
-void readFile(char path[])
+void readFile(char path[], char buffer[255][255])
 {
-    FILE * file;
-    char textString[255];
+    char line[255];
+    int i = 0;
 
-    file = fopen("path", "r");
+    FILE * file;
+    file = fopen(path, "r");
+
     if (file == NULL)
     {
         printf("Error opening file at path '%s'", path);
     }
     else
     {
-        if (fgets(textString, 255, file) != NULL)
-        {
-            printf("%s", textString);
+        for (int i = 0; i < 255; i++) {
+            buffer[i][0] = '\0';
         }
-        fclose(file);
+
+        while (fgets(line, sizeof(line), file) && i < 255)
+        {
+            line[strcspn(line, "\n")] = 0;
+            strcpy(buffer[i], line);
+            i++;
+        }
+
+        printf("File was loaded successfully!\n");
     }
 }
 
-void writeFile(char path[], char text[])
+void writeFile(char path[], char buffer[255][255])
 {
-    printf("We begin the process of saving:\n");
-    printf("%s\n", text);
-    printf("%s\n", path);
-
     FILE* file;
     file = fopen(path, "w");
-    printf("%d", file == NULL);
     if (file != NULL)
     {
-        fputs(text, file);
+        int i = 0;
+        while(buffer[i][0] != '\0')
+        {
+            fputs(buffer[i], file);
+            fputc('\n', file);
+            i++;
+        }
+
         fclose(file);
+    } else
+    {
+        printf("Error saving data to file!");
     }
 }
