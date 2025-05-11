@@ -50,3 +50,32 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# ===========================
+
+# CLion specific files
+.idea/
+
+# CMake build directory created by CLion
+cmake-build-debug/
+cmake-build-release/
+
+# Compiled binary files (you can specify the names of the binaries, or use wildcard patterns)
+*.out
+*.exe
+*.a
+*.so
+*.dylib
+
+# Ignore OS-specific files
+.DS_Store        # macOS
+Thumbs.db        # Windows
+
+# Ignore temporary files
+*.swp            # Vim swap files
+*.swo            # Vim backup files
+
+# Ignore local configuration files (you can add more if you use any)
+*.user
+*.sublime-workspace
+
