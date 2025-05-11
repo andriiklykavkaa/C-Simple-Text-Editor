@@ -7,9 +7,12 @@
 
 void handleCommand()
 {
-    int command;
+    char input [10];
+    int command = -1;
     printf("Choose the command: ");
-    scanf("%d", &command);
+
+    fgets(input, sizeof(input), stdin);
+    sscanf(input, "%d", &command);
 
     switch(command)
     {
@@ -37,12 +40,18 @@ void handleCommand()
         case 7:
             searchText();
             break;
+        case 8:
+            exitProgram();
+            break;
+        default:
+            printf("This command is not implemented\n");
+            break;
     }
 }
 
 
 void cleanConsole() {
-
+ // To be implemented
 }
 
 int main()

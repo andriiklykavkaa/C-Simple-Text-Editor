@@ -3,9 +3,15 @@
 //
 
 #include "commands.h"
+#include "file_interaction.h"
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-void showInstructions() {
+char buffer[255][255];
+
+void showInstructions()
+{
     printf("The list of instructions: \n");
     printf("0 - show the list of commands.\n");
     printf("1 - append text.\n");
@@ -15,32 +21,88 @@ void showInstructions() {
     printf("5 - print text in a file.\n");
     printf("6 - insert in text by line and index.\n");
     printf("7 - search in a file.\n");
+    printf("8 - exit program\n");
 }
 
-void appendText() {
-    
+void appendText()
+{
+    char input[255];
+
+    printf("Enter text to append: ");
+    fgets(input, sizeof(input), stdin);
+    input[strcspn(input, "\n")] = 0;
+
+    int lastLine = 0;
+    for(int i = 0; i < 255; i++)
+    {
+        if (buffer[i][0] == '\0')
+        {
+            break;
+        }
+        lastLine = i;
+    }
+
+    strcat(buffer[lastLine], input);
 }
 
-void addNewLine() {
+void addNewLine()
+{
+
+    int lastLine = 0;
+    for(int i = 0; i < 255; i++)
+    {
+        if (buffer[i][0] == '\0')
+        {
+            break;
+        }
+        lastLine = i;
+    }
+
+    strcat(buffer[lastLine], "\n");
+    printf("New line is started\n");
+}
+
+void saveFile()
+{
+    char path[20];
+    printf("Enter file path for saving: ");
+    scanf("%s", &path);
+
+    writeFile(path, buffer);
+}
+
+void loadFile()
+{
+    char path[20];
+    printf("Enter file path for loading: ");
+    scanf("%s", &path);
+    readFile(path, buffer);
+}
+
+void printText()
+{
+    for(int i = 0; i < 255; i++)
+    {
+        if (buffer[i][0] == '\0')
+        {
+            break;
+        }
+        printf("%s\n", buffer[i]);
+    }
+    printf("\n");
+}
+
+void insertByLineAndIndex()
+{
+}
+
+void searchText()
+{
 
 }
 
-void saveFile() {
-
-}
-
-void loadFile() {
-
-}
-
-void printText() {
-
-}
-
-void insertByLineAndIndex() {
-
-}
-
-void searchText() {
-
+void exitProgram()
+{
+    printf("Exiting program...\n");
+    exit(101);
 }
