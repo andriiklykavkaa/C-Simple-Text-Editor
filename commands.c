@@ -4,6 +4,9 @@
 
 #include "commands.h"
 #include <stdio.h>
+#include <string.h>
+
+char buffer[255][255];
 
 void showInstructions() {
     printf("The list of instructions: \n");
@@ -18,11 +21,38 @@ void showInstructions() {
 }
 
 void appendText() {
-    
+    char input[255];
+
+    printf("Enter text to append: ");
+    scanf(" %s", input);
+
+    int lastLine = 0;
+    for(int i = 0; i < 255; i++)
+    {
+        if (buffer[i][0] == '\0')
+        {
+            break;
+        }
+        lastLine = i;
+    }
+
+    strcat(buffer[lastLine], input);
 }
 
 void addNewLine() {
 
+    int lastLine = 0;
+    for(int i = 0; i < 255; i++)
+    {
+        if (buffer[i][0] == '\0')
+        {
+            break;
+        }
+        lastLine = i;
+    }
+
+    strcat(buffer[lastLine], "\n");
+    printf("New line is started\n");
 }
 
 void saveFile() {
@@ -34,7 +64,15 @@ void loadFile() {
 }
 
 void printText() {
-
+    for(int i = 0; i < 255; i++)
+    {
+        if (buffer[i][0] == '\0')
+        {
+            break;
+        }
+        printf("%s", buffer[i]);
+    }
+    printf("\n");
 }
 
 void insertByLineAndIndex() {

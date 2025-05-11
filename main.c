@@ -9,7 +9,7 @@ void handleCommand()
 {
     int command;
     printf("Choose the command: ");
-    scanf("%d", &command);
+    scanf(" %d", &command);
 
     switch(command)
     {
@@ -37,12 +37,15 @@ void handleCommand()
         case 7:
             searchText();
             break;
+        default:
+            printf("This command is not implemented\n");
+            break;
     }
 }
 
 
 void cleanConsole() {
-
+ // To be implemented
 }
 
 int main()
