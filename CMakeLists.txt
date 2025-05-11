@@ -3,4 +3,8 @@ project(TextEditor C)
 
 set(CMAKE_C_STANDARD 11)
 
-add_executable(TextEditor main.c)
+add_executable(TextEditor main.c
+        commands.c
+        commands.h
+        file_interaction.c
+        file_interaction.h)
