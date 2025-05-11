@@ -7,9 +7,12 @@
 
 void handleCommand()
 {
-    int command;
+    char input [10];
+    int command = -1;
     printf("Choose the command: ");
-    scanf(" %d", &command);
+
+    fgets(input, sizeof(input), stdin);
+    sscanf(input, "%d", &command);
 
     switch(command)
     {

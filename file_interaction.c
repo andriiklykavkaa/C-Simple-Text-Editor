@@ -26,8 +26,13 @@ void readFile(char path[])
 
 void writeFile(char path[], char text[])
 {
+    printf("We begin the process of saving:\n");
+    printf("%s\n", text);
+    printf("%s\n", path);
+
     FILE* file;
     file = fopen(path, "w");
+    printf("%d", file == NULL);
     if (file != NULL)
     {
         fputs(text, file);

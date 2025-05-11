@@ -3,6 +3,7 @@
 //
 
 #include "commands.h"
+#include "file_interaction.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -24,7 +25,8 @@ void appendText() {
     char input[255];
 
     printf("Enter text to append: ");
-    scanf(" %s", input);
+    fgets(input, sizeof(input), stdin);
+    input[strcspn(input, "\n")] = 0;
 
     int lastLine = 0;
     for(int i = 0; i < 255; i++)
@@ -57,6 +59,24 @@ void addNewLine() {
 
 void saveFile() {
 
+    char textToSave[255*255];
+
+    char path[20];
+    printf("Enter file path for saving: ");
+    scanf("%s", &path);
+
+    for(int i = 0; i < 255; i++)
+    {
+        if (buffer[i][0] == '\0')
+        {
+            break;
+        }
+
+        strcat(textToSave, buffer[i]);
+        strcat(textToSave, "\n");
+    }
+
+    writeFile(path, buffer);
 }
 
 void loadFile() {
@@ -70,9 +90,8 @@ void printText() {
         {
             break;
         }
-        printf("%s", buffer[i]);
+        printf("%s\n", buffer[i]);
     }
-    printf("\n");
 }
 
 void insertByLineAndIndex() {
