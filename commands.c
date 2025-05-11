@@ -5,11 +5,13 @@
 #include "commands.h"
 #include "file_interaction.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 char buffer[255][255];
 
-void showInstructions() {
+void showInstructions()
+{
     printf("The list of instructions: \n");
     printf("0 - show the list of commands.\n");
     printf("1 - append text.\n");
@@ -19,9 +21,11 @@ void showInstructions() {
     printf("5 - print text in a file.\n");
     printf("6 - insert in text by line and index.\n");
     printf("7 - search in a file.\n");
+    printf("8 - exit program\n");
 }
 
-void appendText() {
+void appendText()
+{
     char input[255];
 
     printf("Enter text to append: ");
@@ -41,7 +45,8 @@ void appendText() {
     strcat(buffer[lastLine], input);
 }
 
-void addNewLine() {
+void addNewLine()
+{
 
     int lastLine = 0;
     for(int i = 0; i < 255; i++)
@@ -57,36 +62,25 @@ void addNewLine() {
     printf("New line is started\n");
 }
 
-void saveFile() {
-
-    char textToSave[255*255+255];
-
+void saveFile()
+{
     char path[20];
     printf("Enter file path for saving: ");
     scanf("%s", &path);
 
-    for(int i = 0; i < 255; i++)
-    {
-        if (buffer[i][0] == '\0')
-        {
-            break;
-        }
-
-        strcat(textToSave, buffer[i]);
-        strcat(textToSave, "\n");
-    }
-
     writeFile(path, buffer);
 }
 
-void loadFile() {
+void loadFile()
+{
     char path[20];
     printf("Enter file path for loading: ");
     scanf("%s", &path);
     readFile(path, buffer);
 }
 
-void printText() {
+void printText()
+{
     for(int i = 0; i < 255; i++)
     {
         if (buffer[i][0] == '\0')
@@ -98,10 +92,17 @@ void printText() {
     printf("\n");
 }
 
-void insertByLineAndIndex() {
+void insertByLineAndIndex()
+{
+}
+
+void searchText()
+{
 
 }
 
-void searchText() {
-
+void exitProgram()
+{
+    printf("Exiting program...\n");
+    exit(101);
 }

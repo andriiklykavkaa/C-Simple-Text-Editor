@@ -40,6 +40,9 @@ void handleCommand()
         case 7:
             searchText();
             break;
+        case 8:
+            exitProgram();
+            break;
         default:
             printf("This command is not implemented\n");
             break;

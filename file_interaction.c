@@ -19,17 +19,17 @@ void readFile(char path[], char buffer[255][255])
     }
     else
     {
-        for (int i = 0; i < 255; i++) {
-            buffer[i][0] = '\0';
+        for (int j = 0; j < 255; j++) {
+            buffer[j][0] = '\0';
         }
 
-        while (fgets(line, sizeof(line), file) && i < 255)
+        while (fgets(line, sizeof(line), file))
         {
-            line[strcspn(line, "\n")] = 0;
             strcpy(buffer[i], line);
             i++;
         }
 
+        fclose(file);
         printf("File was loaded successfully!\n");
     }
 }

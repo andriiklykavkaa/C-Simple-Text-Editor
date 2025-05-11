@@ -14,5 +14,6 @@ void printText();
 void insertByLineAndIndex();
 void searchText();
 void cleanConsole();
+void exitProgram();
 
 #endif //COMMAND_H
