@@ -7,8 +7,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
+#include <stdbool.h>
 
-char buffer[255][255];
+#define BUFFER_LINES 255
+#define LINE_CHARS 255
+
+struct IndexTuple
+{
+    int lineIndex;
+    int charIndex;
+};
+
+char buffer[BUFFER_LINES][LINE_CHARS];
 
 void showInstructions()
 {
@@ -87,18 +98,88 @@ void printText()
         {
             break;
         }
-        printf("%s\n", buffer[i]);
+        printf("%s", buffer[i]);
     }
-    printf("\n");
 }
 
 void insertByLineAndIndex()
 {
+    int lineIndex;
+    int charIndex;
+
+    printf("Enter line index and char index: ");
+    if (scanf("%d %d", &lineIndex, &charIndex) == 2 &&
+        lineIndex >= 0 &&
+        charIndex >= 0 &&
+        (lineIndex == 0 || buffer[lineIndex-1][0] != '\0') &&
+        (charIndex == 0 || buffer[lineIndex][charIndex-1] != '\0')) {
+        printf("Line index: %d, Character index: %d\n", lineIndex, charIndex);
+    } else {
+        printf("Invalid input.\n");
+    }
+
+    int ch;
+    while ((ch = getchar()) != '\n' && ch != EOF);
+
+    char *line = buffer[lineIndex];
+    int length = strlen(line);
+
+    char text[255];
+    printf("Enter text to insert: ");
+    fgets(text, sizeof(text), stdin);
+    text[strcspn(text, "\n")] = 0;
+
+    int textLength = strlen(text);
+
+    if(length + textLength > LINE_CHARS)
+    {
+        printf("Operation error. Line length will be too long.\n");
+        return;
+    }
+
+    memmove(line + charIndex + textLength, line + charIndex, length - (charIndex) + 1);
+    memcpy(line + charIndex, text, textLength);
 }
 
 void searchText()
 {
 
+    char text[256];
+    struct IndexTuple results[256];
+    int foundCounter = 0;
+
+    printf("Enter text to search for: ");
+    fgets(text, sizeof(text), stdin);
+    text[strcspn(text, "\n")] = 0;
+
+    for (int i = 0; i < BUFFER_LINES; i++)
+    {
+        char *p_line = buffer[i];
+
+        while((p_line = strstr(p_line, text)) != NULL)
+        {
+            int index = p_line - buffer[i];
+            results[foundCounter].lineIndex = i;
+            results[foundCounter].charIndex = index;
+            foundCounter++;
+
+            p_line += strlen(text);
+        }
+    }
+
+    if (foundCounter == 0)
+    {
+        printf("No matches found.\n");
+    } else
+    {
+        printf("Found at positions: ");
+        for (int i = 0; i < foundCounter; i++)
+        {
+            printf("(%d, %d), ", results[i].lineIndex, results[i].charIndex);
+        }
+
+        printf("\n");
+    }
 }
 
 void exitProgram()

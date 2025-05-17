@@ -1,9 +1,10 @@
-#include <stdbool.h>
 #include <stdio.h>
 
 #include "commands.h"
 #include "file_interaction.h"
 
+#define true 1
+#define false 0
 
 void handleCommand()
 {
