@@ -13,6 +13,12 @@
 #define BUFFER_LINES 255
 #define LINE_CHARS 255
 
+struct IndexTuple
+{
+    int lineIndex;
+    int charIndex;
+};
+
 char buffer[BUFFER_LINES][LINE_CHARS];
 
 void showInstructions()
@@ -138,6 +144,42 @@ void insertByLineAndIndex()
 void searchText()
 {
 
+    char text[256];
+    struct IndexTuple results[256];
+    int foundCounter = 0;
+
+    printf("Enter text to search for: ");
+    fgets(text, sizeof(text), stdin);
+    text[strcspn(text, "\n")] = 0;
+
+    for (int i = 0; i < BUFFER_LINES; i++)
+    {
+        char *p_line = buffer[i];
+
+        while((p_line = strstr(p_line, text)) != NULL)
+        {
+            int index = p_line - buffer[i];
+            results[foundCounter].lineIndex = i;
+            results[foundCounter].charIndex = index;
+            foundCounter++;
+
+            p_line += strlen(text);
+        }
+    }
+
+    if (foundCounter == 0)
+    {
+        printf("No matches found.\n");
+    } else
+    {
+        printf("Found at positions: ");
+        for (int i = 0; i < foundCounter; i++)
+        {
+            printf("(%d, %d), ", results[i].lineIndex, results[i].charIndex);
+        }
+
+        printf("\n");
+    }
 }
 
 void exitProgram()
