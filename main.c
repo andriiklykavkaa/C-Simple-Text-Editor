@@ -1,22 +1,24 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "commands.h"
-#include "file_interaction.h"
 
+
+#define clearScreen() printf("\033[2J\033[H");
 #define true 1
 #define false 0
 
-void handleCommand()
-{
-    char input [10];
+void handleCommand() {
+    char input[10];
     int command = -1;
+
     printf("Choose the command: ");
 
     fgets(input, sizeof(input), stdin);
     sscanf(input, "%d", &command);
 
-    switch(command)
-    {
+    system("clear");
+    switch (command) {
         case 0:
             showInstructions();
             break;
@@ -50,16 +52,9 @@ void handleCommand()
     }
 }
 
-
-void cleanConsole() {
- // To be implemented
-}
-
-int main()
-{
+int main() {
     printf("Welcome to the text editor!\n To see the list of commands, call command '0\n");
-    while(true)
-    {
+    while (true) {
         handleCommand();
     }
 }

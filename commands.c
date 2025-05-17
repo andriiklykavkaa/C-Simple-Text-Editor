@@ -1,28 +1,25 @@
 //
 // Created by Andrii Klykavka on 11.05.2025.
 //
-
-#include "commands.h"
-#include "file_interaction.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
-#include <stdbool.h>
+#include <unistd.h>
+
+#include "commands.h"
+#include "file_interaction.h"
 
 #define BUFFER_LINES 255
 #define LINE_CHARS 255
 
-struct IndexTuple
-{
+struct IndexTuple {
     int lineIndex;
     int charIndex;
 };
 
 char buffer[BUFFER_LINES][LINE_CHARS];
 
-void showInstructions()
-{
+void showInstructions() {
     printf("The list of instructions: \n");
     printf("0 - show the list of commands.\n");
     printf("1 - append text.\n");
@@ -35,8 +32,7 @@ void showInstructions()
     printf("8 - exit program\n");
 }
 
-void appendText()
-{
+void appendText() {
     char input[255];
 
     printf("Enter text to append: ");
@@ -44,10 +40,8 @@ void appendText()
     input[strcspn(input, "\n")] = 0;
 
     int lastLine = 0;
-    for(int i = 0; i < 255; i++)
-    {
-        if (buffer[i][0] == '\0')
-        {
+    for (int i = 0; i < 255; i++) {
+        if (buffer[i][0] == '\0') {
             break;
         }
         lastLine = i;
@@ -56,14 +50,10 @@ void appendText()
     strcat(buffer[lastLine], input);
 }
 
-void addNewLine()
-{
-
+void addNewLine() {
     int lastLine = 0;
-    for(int i = 0; i < 255; i++)
-    {
-        if (buffer[i][0] == '\0')
-        {
+    for (int i = 0; i < 255; i++) {
+        if (buffer[i][0] == '\0') {
             break;
         }
         lastLine = i;
@@ -73,8 +63,7 @@ void addNewLine()
     printf("New line is started\n");
 }
 
-void saveFile()
-{
+void saveFile() {
     char path[20];
     printf("Enter file path for saving: ");
     scanf("%s", &path);
@@ -82,28 +71,23 @@ void saveFile()
     writeFile(path, buffer);
 }
 
-void loadFile()
-{
+void loadFile() {
     char path[20];
     printf("Enter file path for loading: ");
     scanf("%s", &path);
     readFile(path, buffer);
 }
 
-void printText()
-{
-    for(int i = 0; i < 255; i++)
-    {
-        if (buffer[i][0] == '\0')
-        {
+void printText() {
+    for (int i = 0; i < 255; i++) {
+        if (buffer[i][0] == '\0') {
             break;
         }
         printf("%s", buffer[i]);
     }
 }
 
-void insertByLineAndIndex()
-{
+void insertByLineAndIndex() {
     int lineIndex;
     int charIndex;
 
@@ -111,8 +95,8 @@ void insertByLineAndIndex()
     if (scanf("%d %d", &lineIndex, &charIndex) == 2 &&
         lineIndex >= 0 &&
         charIndex >= 0 &&
-        (lineIndex == 0 || buffer[lineIndex-1][0] != '\0') &&
-        (charIndex == 0 || buffer[lineIndex][charIndex-1] != '\0')) {
+        (lineIndex == 0 || buffer[lineIndex - 1][0] != '\0') &&
+        (charIndex == 0 || buffer[lineIndex][charIndex - 1] != '\0')) {
         printf("Line index: %d, Character index: %d\n", lineIndex, charIndex);
     } else {
         printf("Invalid input.\n");
@@ -131,8 +115,7 @@ void insertByLineAndIndex()
 
     int textLength = strlen(text);
 
-    if(length + textLength > LINE_CHARS)
-    {
+    if (length + textLength > LINE_CHARS) {
         printf("Operation error. Line length will be too long.\n");
         return;
     }
@@ -141,9 +124,7 @@ void insertByLineAndIndex()
     memcpy(line + charIndex, text, textLength);
 }
 
-void searchText()
-{
-
+void searchText() {
     char text[256];
     struct IndexTuple results[256];
     int foundCounter = 0;
@@ -152,12 +133,10 @@ void searchText()
     fgets(text, sizeof(text), stdin);
     text[strcspn(text, "\n")] = 0;
 
-    for (int i = 0; i < BUFFER_LINES; i++)
-    {
+    for (int i = 0; i < BUFFER_LINES; i++) {
         char *p_line = buffer[i];
 
-        while((p_line = strstr(p_line, text)) != NULL)
-        {
+        while ((p_line = strstr(p_line, text)) != NULL) {
             int index = p_line - buffer[i];
             results[foundCounter].lineIndex = i;
             results[foundCounter].charIndex = index;
@@ -167,14 +146,11 @@ void searchText()
         }
     }
 
-    if (foundCounter == 0)
-    {
+    if (foundCounter == 0) {
         printf("No matches found.\n");
-    } else
-    {
+    } else {
         printf("Found at positions: ");
-        for (int i = 0; i < foundCounter; i++)
-        {
+        for (int i = 0; i < foundCounter; i++) {
             printf("(%d, %d), ", results[i].lineIndex, results[i].charIndex);
         }
 
@@ -182,8 +158,12 @@ void searchText()
     }
 }
 
-void exitProgram()
-{
+void exitProgram() {
     printf("Exiting program...\n");
     exit(101);
+}
+
+void clearScreen() {
+    const char *CLEAR_SCREEN_ANSI = "\e[1;1H\e[2J";
+    write(STDOUT_FILENO, CLEAR_SCREEN_ANSI, 12);
 }
