@@ -2,18 +2,19 @@
 #include <stdlib.h>
 
 #include "commands.h"
+#include "Buffer.h"
 
 
 #define clearScreen() printf("\033[2J\033[H");
 #define true 1
 #define false 0
 
-void handleCommand() {
-    char input[10];
+void handleCommand(Buffer *buffer) {
+
+    char input[8];
     int command = -1;
 
     printf("Choose the command: ");
-
     fgets(input, sizeof(input), stdin);
     sscanf(input, "%d", &command);
 
@@ -23,25 +24,25 @@ void handleCommand() {
             showInstructions();
             break;
         case 1:
-            appendText();
+            appendText(buffer);
             break;
         case 2:
-            addNewLine();
+            addNewLine(buffer);
             break;
         case 3:
-            saveFile();
+            saveFile(buffer);
             break;
         case 4:
-            loadFile();
+            loadFile(buffer);
             break;
         case 5:
-            printText();
+            printText(buffer);
             break;
         case 6:
-            insertByLineAndIndex();
+            insertByLineAndIndex(buffer);
             break;
         case 7:
-            searchText();
+            searchText(buffer);
             break;
         case 8:
             exitProgram();
@@ -53,8 +54,10 @@ void handleCommand() {
 }
 
 int main() {
+    Buffer buffer = createBuffer();
+
     printf("Welcome to the text editor!\n To see the list of commands, call command '0\n");
     while (true) {
-        handleCommand();
+        handleCommand(&buffer);
     }
 }

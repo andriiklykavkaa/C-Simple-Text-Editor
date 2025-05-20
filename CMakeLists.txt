@@ -7,4 +7,6 @@ add_executable(TextEditor main.c
         commands.c
         commands.h
         file_interaction.c
-        file_interaction.h)
+        file_interaction.h
+        Buffer.c
+        Buffer.h)
