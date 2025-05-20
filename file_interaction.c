@@ -3,45 +3,55 @@
 //
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
-void readFile(char path[], char buffer[255][255]) {
-    char line[255];
-    int i = 0;
+#include "Buffer.h"
 
-    FILE *file;
-    file = fopen(path, "r");
+void readFile(char *path, Buffer *buffer) {
+    buffer->free(buffer);
+    buffer->lines = malloc(sizeof(TextLine) * 8);
 
+    FILE *file = fopen(path, "r");
     if (file == NULL) {
         printf("Error opening file at path '%s'", path);
-    } else {
-        for (int j = 0; j < 255; j++) {
-            buffer[j][0] = '\0';
-        }
-
-        while (fgets(line, sizeof(line), file)) {
-            strcpy(buffer[i], line);
-            i++;
-        }
-
-        fclose(file);
-        printf("File was loaded successfully!\n");
+        return;
     }
+
+    char *line = NULL;
+    size_t len = 0;
+    size_t read;
+
+    buffer->height = 0;
+
+    while((read = getline(&line, &len, file)) != -1) {
+        if (read > 0 && line[read - 1 ] == '\n') {
+            line[read - 1] = '\0';
+        }
+
+        buffer->addLine(buffer);
+        buffer->append(buffer, line);
+    }
+
+    free(line);
+    fclose(file);
+    printf("File downloaded.\n");
 }
 
-void writeFile(char path[], char buffer[255][255]) {
-    FILE *file;
-    file = fopen(path, "w");
-    if (file != NULL) {
-        int i = 0;
-        while (buffer[i][0] != '\0') {
-            fputs(buffer[i], file);
-            fputc('\n', file);
-            i++;
-        }
-
-        fclose(file);
-    } else {
-        printf("Error saving data to file!");
+void writeFile(char *path, Buffer *buffer) {
+    FILE *file = fopen(path, "w");
+    if (file == NULL) {
+        printf("Error creating file at path: %s", path);
+        return;
     }
+
+    char newLine = '\n';
+    for(int i = 0; i < buffer->height; i++) {
+        fwrite(buffer->lines[i].text, sizeof(char), buffer->lines[i].size, file);
+        fputs(&newLine, file);
+    }
+
+    fclose(file);
+    printf("File saved.\n");
 }

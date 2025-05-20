@@ -5,24 +5,19 @@
 #ifndef COMMAND_H
 #define COMMAND_H
 
-void appendText();
 
-void addNewLine();
+#include "Buffer.h"
 
+char* readConsole();
 void showInstructions();
-
-void saveFile();
-
-void loadFile();
-
-void printText();
-
-void insertByLineAndIndex();
-
-void searchText();
-
-void cleanConsole();
-
+void appendText(Buffer *buffer);
+void addNewLine(Buffer *buffer);
+void saveFile(Buffer *buffer);
+void loadFile(Buffer *buffer);
+void printText(Buffer *buffer);
+void insertByLineAndIndex(Buffer *buffer);
+void searchText(Buffer *buffer);
 void exitProgram();
+void clearScreen();
 
 #endif //COMMAND_H

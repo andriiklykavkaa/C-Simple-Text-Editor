@@ -8,16 +8,35 @@
 
 #include "commands.h"
 #include "file_interaction.h"
+#include "Buffer.h"
 
 #define BUFFER_LINES 255
 #define LINE_CHARS 255
 
-struct IndexTuple {
-    int lineIndex;
-    int charIndex;
-};
+char* readConsole() {
 
-char buffer[BUFFER_LINES][LINE_CHARS];
+    size_t size = 0;
+    size_t capacity = 16;
+    char *input = malloc(capacity * sizeof(char));
+
+    int ch;
+    while((ch = getchar()) != '\n' && ch != EOF) {
+        if (size + 1 >= capacity) {
+            capacity *= 2;
+            char *newInput = realloc(input, capacity);
+            if (newInput == NULL) {
+                free(input);
+                return NULL;
+            }
+            input = newInput;
+        }
+        input[size] = (char)ch;
+        size++;
+    }
+
+    input[size] = '\0';
+    return input;
+}
 
 void showInstructions() {
     printf("The list of instructions: \n");
@@ -25,45 +44,26 @@ void showInstructions() {
     printf("1 - append text.\n");
     printf("2 - add new line.\n");
     printf("3 - save a file.\n");
-    printf("4 - load a file..\n");
-    printf("5 - print text in a file.\n");
+    printf("4 - load a file.\n");
+    printf("5 - print text.\n");
     printf("6 - insert in text by line and index.\n");
-    printf("7 - search in a file.\n");
+    printf("7 - search in text.\n");
     printf("8 - exit program\n");
 }
 
-void appendText() {
-    char input[255];
+void appendText(Buffer *buffer) {
 
     printf("Enter text to append: ");
-    fgets(input, sizeof(input), stdin);
-    input[strcspn(input, "\n")] = 0;
-
-    int lastLine = 0;
-    for (int i = 0; i < 255; i++) {
-        if (buffer[i][0] == '\0') {
-            break;
-        }
-        lastLine = i;
-    }
-
-    strcat(buffer[lastLine], input);
+    char *input = readConsole();
+    buffer->append(buffer, input);
 }
 
-void addNewLine() {
-    int lastLine = 0;
-    for (int i = 0; i < 255; i++) {
-        if (buffer[i][0] == '\0') {
-            break;
-        }
-        lastLine = i;
-    }
-
-    strcat(buffer[lastLine], "\n");
+void addNewLine(Buffer *buffer) {
+    buffer->addLine(buffer);
     printf("New line is started\n");
 }
 
-void saveFile() {
+void saveFile(Buffer *buffer) {
     char path[20];
     printf("Enter file path for saving: ");
     scanf("%s", &path);
@@ -71,91 +71,43 @@ void saveFile() {
     writeFile(path, buffer);
 }
 
-void loadFile() {
+void loadFile(Buffer *buffer) {
     char path[20];
     printf("Enter file path for loading: ");
     scanf("%s", &path);
     readFile(path, buffer);
 }
 
-void printText() {
-    for (int i = 0; i < 255; i++) {
-        if (buffer[i][0] == '\0') {
-            break;
-        }
-        printf("%s", buffer[i]);
-    }
+void printText(Buffer *buffer) {
+    buffer->print(buffer);
 }
 
-void insertByLineAndIndex() {
-    int lineIndex;
-    int charIndex;
+void insertByLineAndIndex(Buffer *buffer) {
+    int lineIdx;
+    int charIdx;
 
     printf("Enter line index and char index: ");
-    if (scanf("%d %d", &lineIndex, &charIndex) == 2 &&
-        lineIndex >= 0 &&
-        charIndex >= 0 &&
-        (lineIndex == 0 || buffer[lineIndex - 1][0] != '\0') &&
-        (charIndex == 0 || buffer[lineIndex][charIndex - 1] != '\0')) {
-        printf("Line index: %d, Character index: %d\n", lineIndex, charIndex);
+    if (scanf("%d %d", &lineIdx, &charIdx) == 2 && lineIdx >= 0 && charIdx >= 0) {
+        printf("Line index: %d, Character index: %d\n", lineIdx, charIdx);
     } else {
         printf("Invalid input.\n");
+        return;
     }
 
     int ch;
     while ((ch = getchar()) != '\n' && ch != EOF);
 
-    char *line = buffer[lineIndex];
-    int length = strlen(line);
 
-    char text[255];
     printf("Enter text to insert: ");
-    fgets(text, sizeof(text), stdin);
-    text[strcspn(text, "\n")] = 0;
+    char *input = readConsole();
 
-    int textLength = strlen(text);
-
-    if (length + textLength > LINE_CHARS) {
-        printf("Operation error. Line length will be too long.\n");
-        return;
-    }
-
-    memmove(line + charIndex + textLength, line + charIndex, length - (charIndex) + 1);
-    memcpy(line + charIndex, text, textLength);
+    buffer->insert(buffer, lineIdx, charIdx, input);
 }
 
-void searchText() {
-    char text[256];
-    struct IndexTuple results[256];
-    int foundCounter = 0;
-
+void searchText(Buffer *buffer) {
     printf("Enter text to search for: ");
-    fgets(text, sizeof(text), stdin);
-    text[strcspn(text, "\n")] = 0;
-
-    for (int i = 0; i < BUFFER_LINES; i++) {
-        char *p_line = buffer[i];
-
-        while ((p_line = strstr(p_line, text)) != NULL) {
-            int index = p_line - buffer[i];
-            results[foundCounter].lineIndex = i;
-            results[foundCounter].charIndex = index;
-            foundCounter++;
-
-            p_line += strlen(text);
-        }
-    }
-
-    if (foundCounter == 0) {
-        printf("No matches found.\n");
-    } else {
-        printf("Found at positions: ");
-        for (int i = 0; i < foundCounter; i++) {
-            printf("(%d, %d), ", results[i].lineIndex, results[i].charIndex);
-        }
-
-        printf("\n");
-    }
+    char *input = readConsole();
+    buffer->search(buffer, input);
 }
 
 void exitProgram() {
